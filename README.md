@@ -28,6 +28,7 @@
 
 ### Тестирование
 
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/2664ece3-eb4b-467d-9176-caea3687329f" />
 
 
 
@@ -60,5 +61,10 @@
 5)Выводим на экран все шестнадцатеричные числа и их десятичный вид
 
 ### Тестирование
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/d2eadc09-3b6f-434b-b160-96bd7044ecb8" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/fad8d875-3772-4428-b7ff-e34fac17975b" />
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/47c82c43-9d4e-4009-808a-0f58fea371aa" />
+
+
 
 
