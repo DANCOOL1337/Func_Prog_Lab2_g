@@ -1,21 +1,19 @@
-﻿open System
+open System
 
-// Zadanie 1
+//Zadanie 1
 //(*
-
-// Функция для преобразования двоичного списка в десятичное число
+//Преобразования двоичного списка в десятичное число
 let rec binaryToDecimal binaryList =
     let rec helper list index acc =
         match list with
         | [] -> acc
         | head :: tail ->
-            // Если встретили 1, добавляем 2^index к результату
-            let newAcc = if head = 1 then acc + pown 2 index else acc
-            helper tail (index - 1) newAcc
-    // Запускаем с конца списка (индекс = длина - 1)
-    helper (List.rev binaryList) (List.length binaryList - 1) 0
+            //Убираем List.rev и считаем с начала списка
+            let newAcc = if head = 1 then acc + pown 2 (List.length binaryList - 1 - index) else acc
+            helper tail (index + 1) newAcc
+    helper binaryList 0 0
 
-// Функция для вывода результата
+//Вывод
 let printResult binary decimal =
     printfn "Двоичное представление: %A" binary
     printfn "Десятичное представление: %d" decimal
@@ -24,7 +22,7 @@ let printResult binary decimal =
 let main args =
     printfn "===Преобразование двоичных чисел в десятичные==="
     
-    // Список двоичных представлений цифр от 1 до 9
+    //Список в двоичном представлении
     let binaryNumbers = [
         [1]                     // 1
         [1; 0]                  // 2
@@ -37,20 +35,25 @@ let main args =
         [1; 0; 0; 1]            // 9
     ]
     
-    printfn "Список двоичных значений цифр от 1 до 9:"
+    //Запрашиваем ввод у пользователя
+    printf "Введите двоичное представление числа от 1 до 9: "
+    let input = Console.ReadLine()
     
-    // Проходим по каждому двоичному числу и преобразуем его
-    let rec processList list =
-        match list with
-        | [] -> ()
-        | head :: tail ->
-            let decimal = binaryToDecimal head
-            printResult head decimal
-            processList tail
+    //Преобразуем строку в список
+    let userBinaryList = 
+        input.ToCharArray()
+        |> Array.map (fun c -> if c = '1' then 1 else 0)
+        |> Array.toList
     
-    processList binaryNumbers
+    //Проверяем, есть ли такое число в списке
+    if List.contains userBinaryList binaryNumbers then
+        let decimal = binaryToDecimal userBinaryList
+        printfn "\nРезультат:"
+        printResult userBinaryList decimal
+    else
+        printfn "Ошибка. Введено некорректное число"
+    
     0
-
 //*)
 
 // Zadanie 2
