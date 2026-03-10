@@ -1,60 +1,94 @@
 open System
-
 //Zadanie 1
 //(*
-//Преобразования двоичного списка в десятичное число
+
+//Двоичный список в десятичное число
 let rec binaryToDecimal binaryList =
     let rec helper list index acc =
         match list with
         | [] -> acc
         | head :: tail ->
-            //Убираем List.rev и считаем с начала списка
-            let newAcc = if head = 1 then acc + pown 2 (List.length binaryList - 1 - index) else acc
+            let newAcc =
+                if head = 1 then 
+                    acc + pown 2 (List.length binaryList - 1 - index) 
+                else 
+                    acc
             helper tail (index + 1) newAcc
     helper binaryList 0 0
 
-//Вывод
-let printResult binary decimal =
-    printfn "Двоичное представление: %A" binary
-    printfn "Десятичное представление: %d" decimal
+
+//Строки в список двоичных цифр 
+let stringToBinaryList (input: string) =
+    let rec charsToList chars acc =
+        match chars with
+        | [] -> List.rev acc
+        | c :: rest ->
+            let digit = if c = '1' then 1 else 0
+            charsToList rest (digit :: acc)
+    charsToList (Seq.toList input) []
+
+//Проверка
+let isValidBinaryList userList validLists =
+    List.contains userList validLists
+
+//Изначальный список
+let getValidBinaryNumbers () = [
+    [1]                     // 1
+    [1; 0]                  // 2
+    [1; 1]                  // 3
+    [1; 0; 0]               // 4
+    [1; 0; 1]               // 5
+    [1; 1; 0]               // 6
+    [1; 1; 1]               // 7
+    [1; 0; 0; 0]            // 8
+    [1; 0; 0; 1]            // 9
+]
+
+//Разделение строки на список подстрок
+let splitBySpace (text: string) =
+    let rec collectWords currentWord words chars =
+        match chars with
+        | [] -> 
+            if currentWord = "" then List.rev words
+            else List.rev (currentWord :: words)
+        | c :: rest ->
+            if c = ' ' then
+                if currentWord = "" then collectWords "" words rest
+                else collectWords "" (currentWord :: words) rest
+            else
+                collectWords (currentWord + string c) words rest
+    collectWords "" [] (Seq.toList text)
+
+
+let processInput (input: string) =
+    let binaryNumbers = getValidBinaryNumbers ()
+    let rawInputs = splitBySpace input
+    
+    //Cоздание списка десятичных результатов
+    let results = 
+        rawInputs |> List.map (fun singleInput ->
+            let userBinaryList = stringToBinaryList singleInput
+            if isValidBinaryList userBinaryList binaryNumbers then
+                string (binaryToDecimal userBinaryList)
+            else
+                "ошибка"
+        )
+
+    //Вывод
+    printfn "\nИзначальный список : %s" (String.Join(" ", rawInputs))
+    printfn "Получившийся список : %s" (String.Join(" ", results))
 
 [<EntryPoint>]
 let main args =
     printfn "===Преобразование двоичных чисел в десятичные==="
     
-    //Список в двоичном представлении
-    let binaryNumbers = [
-        [1]                     // 1
-        [1; 0]                  // 2
-        [1; 1]                  // 3
-        [1; 0; 0]               // 4
-        [1; 0; 1]               // 5
-        [1; 1; 0]               // 6
-        [1; 1; 1]               // 7
-        [1; 0; 0; 0]            // 8
-        [1; 0; 0; 1]            // 9
-    ]
-    
-    //Запрашиваем ввод у пользователя
-    printf "Введите двоичное представление числа от 1 до 9: "
+    printf "Введите двоичные цифры через пробел: "
     let input = Console.ReadLine()
     
-    //Преобразуем строку в список
-    let userBinaryList = 
-        input.ToCharArray()
-        |> Array.map (fun c -> if c = '1' then 1 else 0)
-        |> Array.toList
+    if not (String.IsNullOrWhiteSpace(input)) then
+        processInput input
     
-    //Проверяем, есть ли такое число в списке
-    if List.contains userBinaryList binaryNumbers then
-        let decimal = binaryToDecimal userBinaryList
-        printfn "\nРезультат:"
-        printResult userBinaryList decimal
-    else
-        printfn "Ошибка. Введено некорректное число"
-    
-    0
-//*)
+    0//*)
 
 // Zadanie 2
 //(*
